@@ -1,5 +1,6 @@
 package com.gradle.develocity.api.builds;
 
+import com.gradle.develocity.api.ProjectMetrics;
 import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.*;
@@ -61,6 +62,16 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                 attributes.getBuildDuration(),
                 attributes.getEnvironment().getUsername()
             );
+
+            //TODO fzhu code
+            postMetrics(
+                    build,
+                    getMavenLocalCache(model),
+                    getMavenRemoteCache(model),
+                    attributes.getTopLevelProjectName(),
+                    attributes.getBuildDuration(),
+                    attributes.getEnvironment().getUsername()
+            );
         }
     }
 
@@ -76,6 +87,16 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                 attributes.getBuildDuration(),
                 attributes.getEnvironment().getUsername()
             );
+
+            //TODO fzhu code
+            postMetrics(
+                    build,
+                    getGradleLocalCache(model),
+                    getGradleRemoteCache(model),
+                    attributes.getRootProjectName(),
+                    attributes.getBuildDuration(),
+                    attributes.getEnvironment().getUsername()
+            );
         }
     }
 
@@ -89,6 +110,61 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
             cacheHitPercentage,
             avoidanceSavingsRatioPercentage
         );
+    }
+
+    //TODO fzhu code
+    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, String username) {
+//        System.out.println("************** post metrics *****************");
+//        System.out.println("************** build scan "+ buildScanUrl(build));
+
+        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString() ).set(buildDuration);
+        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString()).inc(buildDuration);
+        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString()).inc(1);
+
+    }
+
+    //TODO fzhu code
+    private static boolean getGradleLocalCache(GradleBuildCachePerformance model) {
+
+        try {
+            assert model.getBuildCaches() != null;
+            return model.getBuildCaches().getLocal().getIsEnabled();
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    //TODO fzhu code
+    private static boolean getGradleRemoteCache(GradleBuildCachePerformance model) {
+
+        try {
+            assert model.getBuildCaches() != null;
+            return model.getBuildCaches().getRemote().getIsEnabled();
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    //TODO fzhu code
+    private static boolean getMavenLocalCache(MavenBuildCachePerformance model) {
+
+        try {
+            assert model.getBuildCaches().getLocal().getIsEnabled() != null;
+            return model.getBuildCaches().getLocal().getIsEnabled();
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    //TODO fzhu code
+    private static boolean getMavenRemoteCache(MavenBuildCachePerformance model) {
+
+        try {
+            assert model.getBuildCaches().getLocal().getIsEnabled() != null;
+            return model.getBuildCaches().getRemote().getIsEnabled();
+        }catch (Exception e){
+            return false;
+        }
     }
 
     private void reportError(Build build, ApiException e) {

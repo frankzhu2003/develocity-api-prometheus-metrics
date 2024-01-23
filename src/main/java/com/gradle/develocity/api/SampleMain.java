@@ -2,9 +2,12 @@ package com.gradle.develocity.api;
 
 import com.gradle.develocity.api.builds.BuildsApiSample;
 import com.gradle.develocity.api.tests.TestsApiSample;
+import io.prometheus.client.exporter.HTTPServer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.HelpCommand;
+
+import java.io.IOException;
 
 @Command(
     name = "develocity-api-samples",
@@ -21,7 +24,13 @@ import picocli.CommandLine.HelpCommand;
 )
 public final class SampleMain {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception, IOException {
+
+        //TODO fzhu code
+        // Prometheus metrics point
+        HTTPServer server = new HTTPServer(8081);
+        System.out.println("******** local metrics server started ***********");
+
         //noinspection InstantiationOfUtilityClass
         System.exit(new CommandLine(new SampleMain()).execute(args));
     }

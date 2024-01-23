@@ -40,6 +40,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    implementation("io.prometheus:simpleclient:0.16.0")
+    implementation("io.prometheus:simpleclient_hotspot:0.16.0")
+    implementation("io.prometheus:simpleclient_httpserver:0.16.0")
+
 }
 
 val gradleEnterpriseVersion = "2023.4" // Must be later than 2022.1
@@ -105,3 +109,22 @@ sourceSets {
         }
     }
 }
+
+tasks.register<Jar>("uberJar") {
+    archiveClassifier.set("uber")
+    if (project.name.equals("kotlin")) {
+        manifest.attributes["Main-Class"] = "com.gradle.develocity.api.SampleMainKt"
+    } else {
+        manifest.attributes["Main-Class"] = "com.gradle.develocity.api.SampleMain"
+    }
+
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath) //dependsOn(sourceSets.main.get().runtimeClasspath)
+    from({
+        configurations.implementation.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+//        sourceSets.main.get().runtimeClasspath.filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
