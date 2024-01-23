@@ -70,13 +70,14 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     getMavenRemoteCache(model),
                     attributes.getTopLevelProjectName(),
                     attributes.getBuildDuration(),
-                    attributes.getEnvironment().getUsername()
+                    attributes.getBuildOptions().getMaxNumberOfThreads() > 0
             );
         }
     }
 
     private void processGradleBuild(Build build) throws ApiException {
         GradleAttributes attributes = api.getGradleAttributes(build.getId(), new BuildModelQuery());
+        attributes.getBuildOptions().getParallelProjectExecutionEnabled();
         if (projectName == null || projectName.equals(attributes.getRootProjectName())) {
             GradleBuildCachePerformance model = api.getGradleBuildCachePerformance(build.getId(), new BuildModelQuery());
             reportBuild(
@@ -95,7 +96,7 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     getGradleRemoteCache(model),
                     attributes.getRootProjectName(),
                     attributes.getBuildDuration(),
-                    attributes.getEnvironment().getUsername()
+                    attributes.getBuildOptions().getParallelProjectExecutionEnabled()
             );
         }
     }
@@ -113,13 +114,13 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     }
 
     //TODO fzhu code
-    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, String username) {
+    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel) {
 //        System.out.println("************** post metrics *****************");
 //        System.out.println("************** build scan "+ buildScanUrl(build));
 
-        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString() ).set(buildDuration);
-        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString()).inc(buildDuration);
-        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString()).inc(1);
+        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString() ).set(buildDuration);
+        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString()).inc(buildDuration);
+        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString()).inc(1);
 
     }
 
