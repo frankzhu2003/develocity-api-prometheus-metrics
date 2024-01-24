@@ -12,7 +12,8 @@ gradleEnterprise {
     buildScan {
         publishAlways()
         isUploadInBackground = System.getenv("CI") == null
-        tag("DEVelocity-Metrics-svc")
+        tag("dv-api-prom-metrics")
+        tag("ci")
         link("Blog","https://gradle.com/blog/visualizing-gradle-enterprise-data-with-prometheus-and-grafana-gradle-enterprise-api-in-action/")
         capture {
             isTaskInputFiles = true

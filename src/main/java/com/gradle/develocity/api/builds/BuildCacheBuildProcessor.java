@@ -53,10 +53,10 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     private void processMavenBuild(Build build) throws ApiException {
         MavenAttributes attributes = api.getMavenAttributes(build.getId(), new BuildModelQuery());
 
-        String  ciTag = "ci";
+        String  ciTag = "local";
         for (String tag : attributes.getTags())  {
-            if (tag.equalsIgnoreCase("local")) {
-                ciTag = "local";
+            if (tag.equalsIgnoreCase("ci")) {
+                ciTag = "ci";
                 break;
             }
         }
@@ -88,10 +88,10 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     private void processGradleBuild(Build build) throws ApiException {
         GradleAttributes attributes = api.getGradleAttributes(build.getId(), new BuildModelQuery());
 
-        String  ciTag = "ci";
+        String  ciTag = "local";
         for (String tag : attributes.getTags())  {
-            if (tag.equalsIgnoreCase("local")) {
-                ciTag = "local";
+            if (tag.equalsIgnoreCase("ci")) {
+                ciTag = "ci";
                 break;
             }
         }
