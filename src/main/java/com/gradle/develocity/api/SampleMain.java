@@ -28,7 +28,7 @@ public final class SampleMain {
 
         //TODO fzhu code
         // Prometheus metrics point
-        HTTPServer server = new HTTPServer(8081);
+        HTTPServer server = new HTTPServer(Integer.valueOf(System.getenv("METRICSPORT")).intValue());
         System.out.println("******** local metrics server started ***********");
 
         //noinspection InstantiationOfUtilityClass

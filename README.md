@@ -40,7 +40,10 @@ The access key should be saved to a file, which will be supplied as a parameter 
 After provisioning the access key, execute:
 
 ```
-$ build/install/develocity-api-samples/bin/develocity-api-samples builds --server-url=«serverUrl» --access-key-file=«accessKeyFile» --project-name=«projectName»
+// The client metrics server listening port
+export METRICSPORT=8081
+
+./build/install/develocity-api-samples/bin/develocity-api-samples builds --server-url=«serverUrl» --access-key-file=«accessKeyFile» --project-name=«projectName»
 ```
 
 - `«serverUrl»`: The address of your Develocity server (e.g. `https://develocity.example.com`)

@@ -52,6 +52,15 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
 
     private void processMavenBuild(Build build) throws ApiException {
         MavenAttributes attributes = api.getMavenAttributes(build.getId(), new BuildModelQuery());
+
+        String  ciTag = "ci";
+        for (String tag : attributes.getTags())  {
+            if (tag.equalsIgnoreCase("local")) {
+                ciTag = "local";
+                break;
+            }
+        }
+
         if (projectName == null || projectName.equals(attributes.getTopLevelProjectName())) {
             MavenBuildCachePerformance model = api.getMavenBuildCachePerformance(build.getId(), new BuildModelQuery());
             reportBuild(
@@ -70,13 +79,23 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     getMavenRemoteCache(model),
                     attributes.getTopLevelProjectName(),
                     attributes.getBuildDuration(),
-                    attributes.getBuildOptions().getMaxNumberOfThreads() > 0
+                    attributes.getBuildOptions().getMaxNumberOfThreads() > 0,
+                    ciTag
             );
         }
     }
 
     private void processGradleBuild(Build build) throws ApiException {
         GradleAttributes attributes = api.getGradleAttributes(build.getId(), new BuildModelQuery());
+
+        String  ciTag = "ci";
+        for (String tag : attributes.getTags())  {
+            if (tag.equalsIgnoreCase("local")) {
+                ciTag = "local";
+                break;
+            }
+        }
+
         attributes.getBuildOptions().getParallelProjectExecutionEnabled();
         if (projectName == null || projectName.equals(attributes.getRootProjectName())) {
             GradleBuildCachePerformance model = api.getGradleBuildCachePerformance(build.getId(), new BuildModelQuery());
@@ -96,7 +115,8 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     getGradleRemoteCache(model),
                     attributes.getRootProjectName(),
                     attributes.getBuildDuration(),
-                    attributes.getBuildOptions().getParallelProjectExecutionEnabled()
+                    attributes.getBuildOptions().getParallelProjectExecutionEnabled(),
+                    ciTag
             );
         }
     }
@@ -114,13 +134,13 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     }
 
     //TODO fzhu code
-    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel) {
+    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel, String ciTag) {
 //        System.out.println("************** post metrics *****************");
 //        System.out.println("************** build scan "+ buildScanUrl(build));
 
-        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString() ).set(buildDuration);
-        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString()).inc(buildDuration);
-        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString()).inc(1);
+        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag ).set(buildDuration);
+        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag).inc(buildDuration);
+        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag).inc(1);
 
     }
 
