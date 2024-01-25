@@ -72,12 +72,17 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                 attributes.getEnvironment().getUsername()
             );
 
+            String project = "null-value";
+            if (attributes.getTopLevelProjectName() != null){
+                project = attributes.getTopLevelProjectName();
+            }
+
             //TODO fzhu code
             postMetrics(
                     build,
                     getMavenLocalCache(model),
                     getMavenRemoteCache(model),
-                    attributes.getTopLevelProjectName(),
+                    project,
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getMaxNumberOfThreads() > 0,
                     ciTag,
@@ -97,7 +102,6 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
             }
         }
 
-        attributes.getBuildOptions().getParallelProjectExecutionEnabled();
         if (projectName == null || projectName.equals(attributes.getRootProjectName())) {
             GradleBuildCachePerformance model = api.getGradleBuildCachePerformance(build.getId(), new BuildModelQuery());
             reportBuild(
@@ -110,11 +114,16 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
             );
 
             //TODO fzhu code
+            String project = "null-value";
+            if (attributes.getRootProjectName() != null){
+                project = attributes.getRootProjectName();
+            }
+
             postMetrics(
                     build,
                     getGradleLocalCache(model),
                     getGradleRemoteCache(model),
-                    attributes.getRootProjectName(),
+                    project,
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getParallelProjectExecutionEnabled(),
                     ciTag,
