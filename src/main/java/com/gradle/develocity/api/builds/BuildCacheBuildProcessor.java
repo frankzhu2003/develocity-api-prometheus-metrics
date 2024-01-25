@@ -138,9 +138,9 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
 //        System.out.println("************** post metrics *****************");
 //        System.out.println("************** build scan "+ buildScanUrl(build));
 
-        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag ).set(buildDuration);
-        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag).inc(buildDuration);
-        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache.toString(), remoteCache.toString(), parallel.toString(), ciTag).inc(1);
+        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag ).set(buildDuration);
+        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag).inc(buildDuration);
+        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag).inc(1);
 
     }
 
