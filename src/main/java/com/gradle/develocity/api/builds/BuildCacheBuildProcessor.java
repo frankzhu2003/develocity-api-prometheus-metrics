@@ -80,7 +80,8 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     attributes.getTopLevelProjectName(),
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getMaxNumberOfThreads() > 0,
-                    ciTag
+                    ciTag,
+                    "maven"
             );
         }
     }
@@ -116,7 +117,8 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     attributes.getRootProjectName(),
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getParallelProjectExecutionEnabled(),
-                    ciTag
+                    ciTag,
+                    "gradle"
             );
         }
     }
@@ -134,13 +136,13 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     }
 
     //TODO fzhu code
-    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel, String ciTag) {
+    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel, String ciTag, String buildTool) {
 //        System.out.println("************** post metrics *****************");
 //        System.out.println("************** build scan "+ buildScanUrl(build));
 
-        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag ).set(buildDuration);
-        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag).inc(buildDuration);
-        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag).inc(1);
+        ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).set(buildDuration);
+        ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).inc(buildDuration);
+        ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).inc(1);
 
     }
 
