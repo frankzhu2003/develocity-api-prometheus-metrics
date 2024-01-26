@@ -86,7 +86,9 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getMaxNumberOfThreads() > 0,
                     ciTag,
-                    "maven"
+                    "maven",
+                    computeCacheHitPercentage(model),
+                    computeAvoidanceSavingsRatioPercentage(model)
             );
         }
     }
@@ -127,7 +129,9 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
                     attributes.getBuildDuration(),
                     attributes.getBuildOptions().getParallelProjectExecutionEnabled(),
                     ciTag,
-                    "gradle"
+                    "gradle",
+                    computeCacheHitPercentage(model),
+                    computeAvoidanceSavingsRatioPercentage(model)
             );
         }
     }
@@ -145,13 +149,15 @@ final class BuildCacheBuildProcessor implements BuildProcessor {
     }
 
     //TODO fzhu code
-    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel, String ciTag, String buildTool) {
+    private void postMetrics(Build build, Boolean localCache, Boolean remoteCache, String rootProjectName, Long buildDuration, Boolean parallel, String ciTag, String buildTool, BigDecimal cacheRate, BigDecimal avoidanceRate) {
 //        System.out.println("************** post metrics *****************");
 //        System.out.println("************** build scan "+ buildScanUrl(build));
 
         ProjectMetrics.buildDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).set(buildDuration);
         ProjectMetrics.bDurationMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).inc(buildDuration);
         ProjectMetrics.bDNumberMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).inc(1);
+        ProjectMetrics.buildCacheMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).observe(cacheRate.toBigInteger().doubleValue());
+        ProjectMetrics.buildCacheAvoidanceMetric.labels(rootProjectName, localCache?"Yes":"No", remoteCache?"Yes":"No", parallel?"Yes":"No", ciTag, buildTool).observe(avoidanceRate.toBigInteger().doubleValue());
 
     }
 
