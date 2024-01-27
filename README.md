@@ -53,6 +53,14 @@ export METRICSPORT=8081
 - `«maxBuilds»` (optional): The maximum number of builds to return by a single query. The number may be lower if --max-wait-secs is reached (default - 100)
 - `«maxWaitSecs»` (optional): The maximum number of seconds to wait until a query returns. If the query returns before --max-builds is reached, it returns with already processed builds (default - 3)
 
+
+Alternately, you can run in a docker container
+```
+docker build -t IMAGE-TAG .
+
+docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key IMAGE-TAG
+
+```
 The program will print `Processing builds ...`, then:
 - when not using `--reverse` or using `--reverse=false`: indefinitely listen for any new builds being published to Develocity and print basic information about each build to the console.
 - when using `--reverse` or `--reverse=true`: listen for all builds that were already published to Develocity and print basic information about each build to the console.
