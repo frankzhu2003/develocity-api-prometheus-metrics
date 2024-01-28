@@ -58,6 +58,8 @@ Alternately, you can run in a docker container
 ```
 docker build -t IMAGE-TAG .
 
+docker image push IMAGE-TAG
+
 docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key IMAGE-TAG
 
 ```
