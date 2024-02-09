@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version embeddedKotlinVersion apply false
     `java-library`
     application
+    id("org.cyclonedx.bom") version "1.8.2"
 }
 
 repositories {
@@ -126,5 +127,19 @@ tasks.register<Jar>("uberJar") {
 //        sourceSets.main.get().runtimeClasspath.filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.cyclonedxBom {
+    setIncludeConfigs(listOf("runtimeClasspath"))
+//    setSkipConfigs(listOf("compileClasspath", "testCompileClasspath"))
+//    setSkipProjects(listOf(rootProject.name, "yourTestSubProject"))
+    setProjectType("application")
+    setSchemaVersion("1.5")
+    setDestination(project.file("build/reports"))
+    setOutputName("bom")
+    setOutputFormat("json")
+    setIncludeBomSerialNumber(true)
+    setIncludeLicenseText(true)
+    setComponentVersion("2.0.0")
 }
 

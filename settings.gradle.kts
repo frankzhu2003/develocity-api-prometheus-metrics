@@ -38,7 +38,7 @@ buildCache {
     remote(gradleEnterprise.buildCache) {
         isPush = java.lang.System.getenv("CI") != null
         //isPush = true
-        isEnabled = false
+        isEnabled = true
 //        path = "/cache/exp5-oct-6-2023-take1"
     }
 }
