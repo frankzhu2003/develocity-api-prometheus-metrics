@@ -6,9 +6,9 @@ plugins {
 }
 
 gradleEnterprise {
-    server = "https://develocity-field.gradle.com"
-//    server = "https://ec2-18-117-85-150.us-east-2.compute.amazonaws.com"
-//    allowUntrustedServer = true
+//    server = "https://develocity-field.gradle.com"
+    server = "https://ec2-18-117-85-150.us-east-2.compute.amazonaws.com"
+    allowUntrustedServer = true
     buildScan {
         publishAlways()
         isUploadInBackground = System.getenv("CI") == null
