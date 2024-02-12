@@ -7,7 +7,7 @@ plugins {
 
 gradleEnterprise {
 //    server = "https://develocity-field.gradle.com"
-    server = "ec2-52-15-178-164.us-east-2.compute.amazonaws.com"
+    server = "https://ec2-52-15-178-164.us-east-2.compute.amazonaws.com"
     allowUntrustedServer = true
     buildScan {
         publishAlways()
