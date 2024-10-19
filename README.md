@@ -70,6 +70,8 @@ To set up Prometheus
 ```
 docker volume create prometheus-volume
 
+## copy the prometheus.yml to the host server
+
 docker run --rm --detach     --name my-prometheus     --publish 9090:9090     --volume prometheus-volume:/prometheus     --volume "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml  --add-host host.docker.internal=host-gateway   prom/prometheus
 ```
 
