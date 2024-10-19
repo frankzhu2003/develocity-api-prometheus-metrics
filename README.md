@@ -62,7 +62,17 @@ docker image push IMAGE-TAG
 
 docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key IMAGE-TAG
 
+Example: docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key frankzhu2003/dv-prom-metrics:latest
+
 ```
+
+To set up Prometheus
+```
+docker volume create prometheus-volume
+
+docker run --rm --detach     --name my-prometheus     --publish 9090:9090     --volume prometheus-volume:/prometheus     --volume "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml  --add-host host.docker.internal=host-gateway   prom/prometheus
+```
+
 The program will print `Processing builds ...`, then:
 - when not using `--reverse` or using `--reverse=false`: indefinitely listen for any new builds being published to Develocity and print basic information about each build to the console.
 - when using `--reverse` or `--reverse=true`: listen for all builds that were already published to Develocity and print basic information about each build to the console.
