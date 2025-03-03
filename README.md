@@ -60,9 +60,9 @@ docker build -t IMAGE-TAG .
 
 docker image push IMAGE-TAG
 
-docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key IMAGE-TAG
+docker run --name dvme --restart always -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key IMAGE-TAG
 
-Example: docker run --name dvme --rm -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key frankzhu2003/dv-prom-metrics:latest
+Example: docker run --name dvme --restart always -p 8081:8081 -e DVSERVER=ge.gradle.org -e DVKEY=ge-gradle-org.key frankzhu2003/dv-prom-metrics:latest
 
 ```
 
@@ -72,7 +72,7 @@ docker volume create prometheus-volume
 
 ## copy the prometheus.yml to the host server
 
-docker run --rm --detach     --name my-prometheus     --publish 9090:9090     --volume prometheus-volume:/prometheus     --volume "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml  --add-host host.docker.internal=host-gateway   prom/prometheus
+docker run --restart always --detach     --name my-prometheus     --publish 9090:9090     --volume prometheus-volume:/prometheus     --volume "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml  --add-host host.docker.internal=host-gateway   prom/prometheus
 ```
 
 The program will print `Processing builds ...`, then:
